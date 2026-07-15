@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>My Study Diary</title>
+
+  <style>
+    /* 전체 요소의 크기 계산 방식을 통일합니다. */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      min-height: 100vh;
+      font-family:
+        "Pretendard",
+        "Noto Sans KR",
+        Arial,
+        sans-serif;
+      color: #333;
+      background: #f3f1ff;
+    }
+
+    /* 전체 콘텐츠 영역 */
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* 상단 제목 영역 */
+    .header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0 0 10px;
+      font-size: 36px;
+      color: #5e548e;
+    }
+
+    .header p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #6c6c7d;
+    }
+
+    /* 공통 카드 디자인 */
+    .card {
+      margin-bottom: 24px;
+      padding: 28px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(80, 70, 130, 0.08);
+    }
+
+    .card-title {
+      margin: 0 0 22px;
+      font-size: 22px;
+      color: #4f4777;
+    }
+
+    /* 입력 폼 */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #4c4960;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      font: inherit;
+      color: #333;
+      background: #fcfbff;
+      border: 1px solid #ddd8ef;
+      border-radius: 10px;
+      outline: none;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #9f8fda;
+      box-shadow: 0 0 0 3px rgba(159, 143, 218, 0.14);
+    }
+
+    textarea {
+      min-height: 100px;
+      line-height: 1.6;
+      resize: vertical;
+    }
+
+    /* 버튼 공통 스타일 */
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      padding: 11px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      border-radius: 9px;
+      transition:
+        transform 0.15s,
+        opacity 0.15s;
+    }
+
+    button:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .primary-btn {
+      color: #fff;
+      background: #7765b5;
+    }
+
+    .secondary-btn {
+      color: #514879;
+      background: #ebe7fa;
+    }
+
+    .danger-btn {
+      color: #9c3f52;
+      background: #fde5ea;
+    }
+
+    .edit-btn {
+      color: #725310;
+      background: #fff1c9;
+    }
+
+    /* 검색 영역 */
+    .search-area {
+      display: flex;
+      align-items: end;
+      gap: 10px;
+    }
+
+    .search-area .form-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    /* 목록 상단 정보 */
+    .list-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .list-header .card-title {
+      margin: 0;
+    }
+
+    .record-count {
+      font-size: 14px;
+      color: #777286;
+    }
+
+    /* 학습 기록 한 개 */
+    .diary-item {
+      padding: 22px;
+      margin-bottom: 16px;
+      background: #fcfbff;
+      border: 1px solid #ebe7f5;
+      border-radius: 14px;
+    }
+
+    .diary-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .diary-date {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .diary-date h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #5e548e;
+    }
+
+    .diary-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .content-box {
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+    }
+
+    .content-box h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: #514879;
+    }
+
+    .content-box p {
+      margin: 0;
+      min-height: 24px;
+      line-height: 1.7;
+      color: #555;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .item-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .item-buttons button {
+      padding: 8px 14px;
+      font-size: 14px;
+    }
+
+    /* 기록이 없을 때 표시 */
+    .empty-message {
+      padding: 40px 20px;
+      text-align: center;
+      color: #827d91;
+      background: #fcfbff;
+      border: 1px dashed #d8d2ea;
+      border-radius: 12px;
+    }
+
+    /* 수정 중이라는 안내 문구 */
+    .edit-message {
+      display: none;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      color: #66561f;
+      background: #fff6d9;
+      border-radius: 9px;
+    }
+
+    .edit-message.show {
+      display: block;
+    }
+
+    /* 모바일 화면 */
+    @media (max-width: 700px) {
+      body {
+        padding: 24px 14px;
+      }
+
+      .header h1 {
+        font-size: 29px;
+      }
+
+      .card {
+        padding: 20px;
+        border-radius: 14px;
+      }
+
+      .search-area {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .search-area .button-group {
+        width: 100%;
+      }
+
+      .search-area button {
+        flex: 1;
+      }
+
+      .diary-content {
+        grid-template-columns: 1fr;
+      }
+
+      .diary-date {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .item-buttons {
+        justify-content: stretch;
+      }
+
+      .item-buttons button {
+        flex: 1;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .button-group {
+        flex-direction: column;
+      }
+
+      .button-group button {
+        width: 100%;
+      }
+
+      .list-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <!-- 페이지 상단 제목 -->
+    <header class="header">
+      <h1>📚 My Study Diary</h1>
+      <p>하루 학습을 기록하고 돌아볼 수 있는 나만의 다이어리</p>
+    </header>
+
+    <!-- 학습 기록 입력 영역 -->
+    <section class="card">
+      <h2 class="card-title">✏️ 오늘의 학습 기록</h2>
+
+      <!-- 수정 버튼을 눌렀을 때 나타나는 안내 -->
+      <div id="editMessage" class="edit-message">
+        현재 기존 기록을 수정하고 있습니다.
+      </div>
+
+      <div class="form-group">
+        <label for="dateInput">날짜</label>
+        <input type="date" id="dateInput" />
+      </div>
+
+      <div class="form-group">
+        <label for="goalsInput">1. 오늘의 목표</label>
+        <textarea
+          id="goalsInput"
+          placeholder="오늘 달성하고 싶은 학습 목표를 작성해 주세요."
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="studyInput">2. 오늘 공부한 내용</label>
+        <textarea
+          id="studyInput"
+          placeholder="오늘 학습한 개념이나 문제를 작성해 주세요."
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="difficultyInput">3. 어려웠던 점</label>
+        <textarea
+          id="difficultyInput"
+          placeholder="학습하면서 어렵거나 막혔던 부분을 작성해 주세요."
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="solutionInput">4. 해결한 방법 / 배운 점</label>
+        <textarea
+          id="solutionInput"
+          placeholder="문제를 어떻게 해결했는지, 무엇을 배웠는지 작성해 주세요."
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="tomorrowInput">5. 내일의 계획</label>
+        <textarea
+          id="tomorrowInput"
+          placeholder="내일 이어서 공부할 내용이나 계획을 작성해 주세요."
+        ></textarea>
+      </div>
+
+      <div class="button-group">
+        <button type="button" id="saveBtn" class="primary-btn">
+          기록 저장
+        </button>
+
+        <button type="button" id="resetBtn" class="secondary-btn">
+          입력 초기화
+        </button>
+
+        <button type="button" id="deleteAllBtn" class="danger-btn">
+          전체 기록 삭제
+        </button>
+      </div>
+    </section>
+
+    <!-- 날짜 검색 영역 -->
+    <section class="card">
+      <h2 class="card-title">🔍 날짜로 기록 검색</h2>
+
+      <div class="search-area">
+        <div class="form-group">
+          <label for="searchDate">검색할 날짜</label>
+          <input type="date" id="searchDate" />
+        </div>
+
+        <div class="button-group">
+          <button type="button" id="searchBtn" class="primary-btn">
+            검색
+          </button>
+
+          <button type="button" id="showAllBtn" class="secondary-btn">
+            전체 보기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 저장된 학습 기록 목록 -->
+    <section class="card">
+      <div class="list-header">
+        <h2 class="card-title">📝 학습 기록 목록</h2>
+        <span id="recordCount" class="record-count">총 0개의 기록</span>
+      </div>
+
+      <div id="diaryList"></div>
+    </section>
+  </main>
+
+  <script>
+    // localStorage에서 사용할 저장소 키입니다.
+    const STORAGE_KEY = "my_study_diary";
+
+    // HTML 요소를 가져옵니다.
+    const dateInput = document.getElementById("dateInput");
+    const goalsInput = document.getElementById("goalsInput");
+    const studyInput = document.getElementById("studyInput");
+    const difficultyInput = document.getElementById("difficultyInput");
+    const solutionInput = document.getElementById("solutionInput");
+    const tomorrowInput = document.getElementById("tomorrowInput");
+
+    const saveBtn = document.getElementById("saveBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const deleteAllBtn = document.getElementById("deleteAllBtn");
+
+    const searchDate = document.getElementById("searchDate");
+    const searchBtn = document.getElementById("searchBtn");
+    const showAllBtn = document.getElementById("showAllBtn");
+
+    const diaryList = document.getElementById("diaryList");
+    const recordCount = document.getElementById("recordCount");
+    const editMessage = document.getElementById("editMessage");
+
+    // 수정 중인 기록의 고유 번호를 저장합니다.
+    // null이면 새로운 기록을 작성하는 상태입니다.
+    let editingId = null;
+
+    // 현재 화면에 적용된 검색 날짜입니다.
+    let currentSearchDate = "";
+
+    /**
+     * 현재 날짜를 YYYY-MM-DD 형태로 반환합니다.
+     */
+    function getToday() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const day = String(today.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+    /**
+     * localStorage에 저장된 기록을 가져옵니다.
+     * 저장된 데이터가 없거나 오류가 발생하면 빈 배열을 반환합니다.
+     */
+    function getDiaryEntries() {
+      try {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        return savedData ? JSON.parse(savedData) : [];
+      } catch (error) {
+        console.error("저장된 기록을 불러오지 못했습니다.", error);
+        return [];
+      }
+    }
+
+    /**
+     * 학습 기록 배열을 localStorage에 저장합니다.
+     */
+    function saveDiaryEntries(entries) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    }
+
+    /**
+     * HTML에 문자를 출력할 때 태그가 실행되지 않도록 변환합니다.
+     */
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    /**
+     * 날짜를 한국어 형식으로 변환합니다.
+     * 예: 2026-07-13 → 2026년 7월 13일
+     */
+    function formatDate(dateString) {
+      const [year, month, day] = dateString.split("-");
+      return `${year}년 ${Number(month)}월 ${Number(day)}일`;
+    }
+
+    /**
+     * 비어 있는 값은 "작성된 내용이 없습니다."라고 표시합니다.
+     */
+    function getDisplayText(text) {
+      const trimmedText = text.trim();
+      return trimmedText
+        ? escapeHtml(trimmedText)
+        : "작성된 내용이 없습니다.";
+    }
+
+    /**
+     * 입력한 내용을 모두 초기화합니다.
+     */
+    function resetForm() {
+      dateInput.value = getToday();
+      goalsInput.value = "";
+      studyInput.value = "";
+      difficultyInput.value = "";
+      solutionInput.value = "";
+      tomorrowInput.value = "";
+
+      editingId = null;
+      saveBtn.textContent = "기록 저장";
+      editMessage.classList.remove("show");
+    }
+
+    /**
+     * 화면에 학습 기록 목록을 출력합니다.
+     * 날짜가 최신인 기록부터 보여줍니다.
+     */
+    function renderDiaryEntries(filterDate = "") {
+      const entries = getDiaryEntries();
+
+      // 최신 날짜 순으로 정렬합니다.
+      // 같은 날짜라면 최근에 저장한 기록이 먼저 표시됩니다.
+      const sortedEntries = [...entries].sort((a, b) => {
+        if (a.date !== b.date) {
+          return b.date.localeCompare(a.date);
+        }
+
+        return b.updatedAt - a.updatedAt;
+      });
+
+      // 검색 날짜가 있으면 해당 날짜의 기록만 보여줍니다.
+      const filteredEntries = filterDate
+        ? sortedEntries.filter((entry) => entry.date === filterDate)
+        : sortedEntries;
+
+      recordCount.textContent = filterDate
+        ? `${formatDate(filterDate)} 기록 ${filteredEntries.length}개`
+        : `총 ${filteredEntries.length}개의 기록`;
+
+      // 기록이 없을 때 안내 문구를 보여줍니다.
+      if (filteredEntries.length === 0) {
+        diaryList.innerHTML = `
+          <div class="empty-message">
+            ${
+              filterDate
+                ? "선택한 날짜에 저장된 학습 기록이 없습니다."
+                : "아직 저장된 학습 기록이 없습니다.<br />오늘의 학습 내용을 기록해 보세요!"
+            }
+          </div>
+        `;
+
+        return;
+      }
+
+      // 저장된 기록을 HTML 문자열로 변환합니다.
+      diaryList.innerHTML = filteredEntries
+        .map(
+          (entry) => `
+            <article class="diary-item">
+              <div class="diary-date">
+                <h3>📅 ${formatDate(entry.date)}</h3>
+              </div>
+
+              <div class="diary-content">
+                <div class="content-box">
+                  <h4>🎯 오늘의 목표</h4>
+                  <p>${getDisplayText(entry.goals)}</p>
+                </div>
+
+                <div class="content-box">
+                  <h4>📖 오늘 공부한 내용</h4>
+                  <p>${getDisplayText(entry.study)}</p>
+                </div>
+
+                <div class="content-box">
+                  <h4>🤔 어려웠던 점</h4>
+                  <p>${getDisplayText(entry.difficulty)}</p>
+                </div>
+
+                <div class="content-box">
+                  <h4>💡 해결한 방법 / 배운 점</h4>
+                  <p>${getDisplayText(entry.solution)}</p>
+                </div>
+
+                <div class="content-box">
+                  <h4>🚀 내일의 계획</h4>
+                  <p>${getDisplayText(entry.tomorrow)}</p>
+                </div>
+              </div>
+
+              <div class="item-buttons">
+                <button
+                  type="button"
+                  class="edit-btn"
+                  onclick="editEntry('${entry.id}')"
+                >
+                  수정
+                </button>
+
+                <button
+                  type="button"
+                  class="danger-btn"
+                  onclick="deleteEntry('${entry.id}')"
+                >
+                  삭제
+                </button>
+              </div>
+            </article>
+          `
+        )
+        .join("");
+    }
+
+    /**
+     * 입력 내용을 저장하거나 기존 기록을 수정합니다.
+     */
+    function saveEntry() {
+      const date = dateInput.value;
+      const goals = goalsInput.value.trim();
+      const study = studyInput.value.trim();
+      const difficulty = difficultyInput.value.trim();
+      const solution = solutionInput.value.trim();
+      const tomorrow = tomorrowInput.value.trim();
+
+      // 날짜는 반드시 입력해야 합니다.
+      if (!date) {
+        alert("학습 날짜를 선택해 주세요.");
+        dateInput.focus();
+        return;
+      }
+
+      // 모든 텍스트 입력값이 비어 있으면 저장하지 않습니다.
+      const isAllEmpty =
+        !goals &&
+        !study &&
+        !difficulty &&
+        !solution &&
+        !tomorrow;
+
+      if (isAllEmpty) {
+        alert("최소 한 가지 이상의 학습 내용을 작성해 주세요.");
+        goalsInput.focus();
+        return;
+      }
+
+      const entries = getDiaryEntries();
+
+      if (editingId) {
+        // 수정 상태라면 해당 기록을 찾아 내용을 변경합니다.
+        const entryIndex = entries.findIndex(
+          (entry) => entry.id === editingId
+        );
+
+        if (entryIndex === -1) {
+          alert("수정할 기록을 찾을 수 없습니다.");
+          resetForm();
+          renderDiaryEntries(currentSearchDate);
+          return;
+        }
+
+        entries[entryIndex] = {
+          ...entries[entryIndex],
+          date,
+          goals,
+          study,
+          difficulty,
+          solution,
+          tomorrow,
+          updatedAt: Date.now()
+        };
+
+        alert("학습 기록이 수정되었습니다.");
+      } else {
+        // 새로운 기록을 생성합니다.
+        const newEntry = {
+          id: `${Date.now()}-${Math.random()
+            .toString(16)
+            .slice(2)}`,
+          date,
+          goals,
+          study,
+          difficulty,
+          solution,
+          tomorrow,
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        };
+
+        entries.push(newEntry);
+        alert("학습 기록이 저장되었습니다.");
+      }
+
+      saveDiaryEntries(entries);
+      resetForm();
+      renderDiaryEntries(currentSearchDate);
+    }
+
+    /**
+     * 선택한 기록을 입력 영역으로 불러와 수정할 수 있게 합니다.
+     */
+    function editEntry(id) {
+      const entries = getDiaryEntries();
+      const selectedEntry = entries.find((entry) => entry.id === id);
+
+      if (!selectedEntry) {
+        alert("수정할 기록을 찾을 수 없습니다.");
+        return;
+      }
+
+      dateInput.value = selectedEntry.date;
+      goalsInput.value = selectedEntry.goals;
+      studyInput.value = selectedEntry.study;
+      difficultyInput.value = selectedEntry.difficulty;
+      solutionInput.value = selectedEntry.solution;
+      tomorrowInput.value = selectedEntry.tomorrow;
+
+      editingId = selectedEntry.id;
+      saveBtn.textContent = "수정 내용 저장";
+      editMessage.classList.add("show");
+
+      // 입력 영역으로 부드럽게 이동합니다.
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+    /**
+     * 선택한 기록 한 개를 삭제합니다.
+     */
+    function deleteEntry(id) {
+      const isConfirmed = confirm(
+        "선택한 학습 기록을 삭제하시겠습니까?"
+      );
+
+      if (!isConfirmed) {
+        return;
+      }
+
+      const entries = getDiaryEntries();
+      const updatedEntries = entries.filter(
+        (entry) => entry.id !== id
+      );
+
+      saveDiaryEntries(updatedEntries);
+
+      // 수정 중인 기록을 삭제했다면 입력 폼도 초기화합니다.
+      if (editingId === id) {
+        resetForm();
+      }
+
+      renderDiaryEntries(currentSearchDate);
+    }
+
+    /**
+     * 저장된 전체 기록을 삭제합니다.
+     */
+    function deleteAllEntries() {
+      const entries = getDiaryEntries();
+
+      if (entries.length === 0) {
+        alert("삭제할 학습 기록이 없습니다.");
+        return;
+      }
+
+      const isConfirmed = confirm(
+        "저장된 모든 학습 기록을 삭제하시겠습니까?\n삭제한 기록은 복구할 수 없습니다."
+      );
+
+      if (!isConfirmed) {
+        return;
+      }
+
+      localStorage.removeItem(STORAGE_KEY);
+      currentSearchDate = "";
+      searchDate.value = "";
+
+      resetForm();
+      renderDiaryEntries();
+
+      alert("모든 학습 기록이 삭제되었습니다.");
+    }
+
+    /**
+     * 입력한 날짜에 해당하는 학습 기록을 검색합니다.
+     */
+    function searchEntries() {
+      const selectedDate = searchDate.value;
+
+      if (!selectedDate) {
+        alert("검색할 날짜를 선택해 주세요.");
+        searchDate.focus();
+        return;
+      }
+
+      currentSearchDate = selectedDate;
+      renderDiaryEntries(selectedDate);
+    }
+
+    /**
+     * 날짜 검색을 초기화하고 전체 기록을 보여줍니다.
+     */
+    function showAllEntries() {
+      currentSearchDate = "";
+      searchDate.value = "";
+      renderDiaryEntries();
+    }
+
+    // 버튼 클릭 이벤트를 연결합니다.
+    saveBtn.addEventListener("click", saveEntry);
+    resetBtn.addEventListener("click", resetForm);
+    deleteAllBtn.addEventListener("click", deleteAllEntries);
+    searchBtn.addEventListener("click", searchEntries);
+    showAllBtn.addEventListener("click", showAllEntries);
+
+    // 페이지가 처음 열렸을 때 실행합니다.
+    document.addEventListener("DOMContentLoaded", () => {
+      dateInput.value = getToday();
+      renderDiaryEntries();
+    });
+  </script>
+</body>
+</html>
